@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIMAS-UPB — Sistem Informasi Manajemen Akademik Mahasiswa</title>
+  <!-- Favicon Logo Universitas Pelita Bangsa -->
+  <link rel="icon" type="image/png" href="assets/img/logo-pelita-bangsa.png">
+  <!-- Stylesheet Akademis & Modern -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <!-- Container Notifikasi Mengambang (Toast) -->
+  <div id="kontainerToast" class="toast-container" aria-live="polite"></div>
+
+  <!-- Modal Konfirmasi Custom Modern -->
+  <div id="modalKonfirmasi" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalJudul">
+    <div class="modal-kotak">
+      <h3 id="modalJudul">Konfirmasi Tindakan</h3>
+      <p id="modalTeks">Apakah Anda yakin ingin melanjutkan tindakan ini?</p>
+      <div class="modal-aksi">
+        <button type="button" id="modalTombolBatal" class="sekunder">Batal</button>
+        <button type="button" id="modalTombolYa" class="btn-danger">Hapus</button>
+      </div>
+    </div>
+  </div>
+
+  <main class="container">
+    <!-- ===================================================================
+         KOP SURAT RESMI KHUSUS CETAK LAPORAN (@media print)
+         =================================================================== -->
+    <header class="print-only print-kop">
+      <div class="print-kop-wrapper">
+        <img src="assets/img/logo-pelita-bangsa.png" alt="Logo Universitas Pelita Bangsa" class="print-kop-logo">
+        <div class="print-kop-text">
+          <h1 class="kop-universitas">UNIVERSITAS PELITA BANGSA</h1>
+          <h2 class="kop-fakultas">FAKULTAS TEKNIK &bull; PROGRAM STUDI TEKNIK INFORMATIKA</h2>
+          <p class="kop-alamat">Jl. Inspeksi Kalimalang No.9, Cibatu, Cikarang Selatan, Kab. Bekasi, Jawa Barat 17530
+            &bull; Telp. (021) 28518181</p>
+          <p class="kop-web">Laman Resmi: www.pelitabangsa.ac.id &bull; Surel: info@pelitabangsa.ac.id</p>
+        </div>
+      </div>
+      <div class="kop-garis-ganda"></div>
+      <h3 class="kop-judul-dokumen">LEMBAR REKAPITULASI HASIL STUDI &amp; PENILAIAN AKADEMIK MAHASISWA</h3>
+      <div class="kop-meta">
+        <span>Mata Kuliah: <strong>Pemrograman Visual Desktop</strong></span>
+        <span>Semester: <strong>5 (Ganjil) — 2026/2027</strong></span>
+        <span>Tanggal Cetak: <strong id="cetakTanggal">-</strong></span>
+      </div>
+    </header>
+
+    <!-- ===================================================================
+         HEADER APLIKASI INTERAKTIF (LAYAR MONITOR)
+         =================================================================== -->
+    <header class="app-header">
+      <div class="header-brand">
+        <img src="assets/img/logo-pelita-bangsa.png" alt="Logo Universitas Pelita Bangsa" class="header-logo">
+        <div class="header-title-box">
+          <div class="univ-tagline">UNIVERSITAS PELITA BANGSA &bull; FAKULTAS TEKNIK</div>
+          <h1>SIMAS-UPB</h1>
+          <p class="sub-header">Sistem Informasi Manajemen Akademik &amp; Rekapitulasi Nilai Mahasiswa</p>
+        </div>
+      </div>
+      <div class="header-badges">
+        <span class="pill-badge kampus">🏛️ Kampus Cikarang</span>
+        <span class="pill-badge prodi">💻 Teknik Informatika</span>
+        <span class="pill-badge">📚 Semester 5 (2026/2027)</span>
+      </div>
+    </header>
+
+    <!-- ===================================================================
+         PANEL FORMULIR INPUT MAHASISWA
+         =================================================================== -->
+    <section class="form-card" aria-labelledby="judulForm">
+      <div class="form-judul-wrap">
+        <h2 id="judulForm">📝 Formulir Penilaian Akademik Mahasiswa</h2>
+        <span class="input-hint">* Masukkan data akademik dengan lengkap</span>
+      </div>
+
+      <form id="formMahasiswa" novalidate>
+        <div class="form-grid">
+          <div class="form-grup">
+            <label for="nim">Nomor Induk Mahasiswa (NIM)</label>
+            <input id="nim" type="text" placeholder="Contoh: 312410470" inputmode="numeric" required>
+            <small class="input-hint">Kunci unik mahasiswa (hanya angka)</small>
+          </div>
+
+          <div class="form-grup">
+            <label for="nama">Nama Lengkap Mahasiswa</label>
+            <input id="nama" type="text" placeholder="Contoh: Puput Novela" required>
+            <small class="input-hint">Sesuai data resmi SIAKAD</small>
+          </div>
+
+          <div class="form-grup">
+            <label for="prodi">Program Studi</label>
+            <select id="prodi">
+              <option value="Teknik Informatika" selected>Teknik Informatika (TI - S1)</option>
+              <option value="Sistem Informasi">Sistem Informasi (SI - S1)</option>
+              <option value="Teknik Industri">Teknik Industri (S1)</option>
+              <option value="Teknik Lingkungan">Teknik Lingkungan (S1)</option>
+              <option value="Manajemen">Manajemen (S1)</option>
+            </select>
+            <small class="input-hint">Program studi mahasiswa</small>
+          </div>
+
+          <div class="form-grup">
+            <label for="matkul">Mata Kuliah</label>
+            <input id="matkul" type="text" value="Pemrograman Visual Desktop"
+              placeholder="Contoh: Pemrograman Visual Desktop">
+            <small class="input-hint">Mata kuliah yang ditempuh</small>
+          </div>
+
+          <div class="form-grup">
+            <label for="nilai">Nilai Akhir (0 - 100)</label>
+            <input id="nilai" type="number" min="0" max="100" placeholder="0 - 100" required>
+            <small class="input-hint">Batas kelulusan akademik &ge; 60</small>
+            <div id="previewGrade" class="preview-grade-box" hidden></div>
+          </div>
+        </div>
+
+        <div class="aksi-form">
+          <button type="submit" id="tombolSimpan">➕ Simpan Data Mahasiswa</button>
+          <button type="button" id="tombolBatal" class="sekunder" hidden>✕ Batal Edit</button>
+        </div>
+        <p id="pesan" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <!-- ===================================================================
+         KARTU RINGKASAN & STATISTIK KELAS
+         =================================================================== -->
+    <section class="ringkasan" aria-label="Ringkasan Statistik Akademik">
+      <div class="kartu">
+        <div class="kartu-header">
+          <small>Total Mahasiswa</small>
+          <span class="kartu-ikon" aria-hidden="true">👥</span>
+        </div>
+        <span class="kartu-angka" id="jumlahTotal">0</span>
+        <span class="kartu-sub">Mahasiswa tercatat</span>
+      </div>
+
+      <div class="kartu lulus">
+        <div class="kartu-header">
+          <small>Mahasiswa Lulus</small>
+          <span class="kartu-ikon" aria-hidden="true">✅</span>
+        </div>
+        <span class="kartu-angka" id="jumlahLulus">0</span>
+        <span class="kartu-sub">Nilai &ge; 60 <span id="persenLulus">(0%)</span></span>
+      </div>
+
+      <div class="kartu gagal">
+        <div class="kartu-header">
+          <small>Belum Lulus</small>
+          <span class="kartu-ikon" aria-hidden="true">❌</span>
+        </div>
+        <span class="kartu-angka" id="jumlahBelum">0</span>
+        <span class="kartu-sub">Nilai &lt; 60 <span id="persenBelum">(0%)</span></span>
+      </div>
+
+      <div class="kartu rerata">
+        <div class="kartu-header">
+          <small>Rata-Rata Nilai</small>
+          <span class="kartu-ikon" aria-hidden="true">📊</span>
+        </div>
+        <span class="kartu-angka" id="rataRataNilai">0.0</span>
+        <span class="kartu-sub">Mean kelas keseluruhan</span>
+      </div>
+
+      <div class="kartu rentang">
+        <div class="kartu-header">
+          <small>Rentang Skor</small>
+          <span class="kartu-ikon" aria-hidden="true">🎯</span>
+        </div>
+        <span class="kartu-angka">
+          <span id="nilaiTertinggi">-</span> / <span id="nilaiTerendah">-</span>
+        </span>
+        <span class="kartu-sub">Nilai Maks / Min</span>
+      </div>
+    </section>
+
+    <!-- Visualisasi Distribusi Grade Mini -->
+    <section class="distribusi-section">
+      <h3 class="distribusi-title">📈 Sebaran Distribusi Frekuensi Grade Akademik (A, B, C, D, E)</h3>
+      <div id="distribusiGradeBar" class="distribusi-grid"></div>
+    </section>
+
+    <!-- ===================================================================
+         TOOLBAR PENCARIAN, FILTER & AKSI DATA
+         =================================================================== -->
+    <section class="toolbar-section">
+      <div class="toolbar-pencarian">
+        <div class="search-box-wrap">
+          <span class="search-icon">🔍</span>
+          <input id="cari" type="search" placeholder="Cari nama atau NIM mahasiswa..." aria-label="Pencarian mahasiswa">
+        </div>
+
+        <select id="filterStatus" aria-label="Saring berdasarkan status kelulusan">
+          <option value="semua">Semua Status</option>
+          <option value="Lulus">Lulus Saja (&ge; 60)</option>
+          <option value="Belum Lulus">Belum Lulus (&lt; 60)</option>
+        </select>
+
+        <select id="filterProdi" aria-label="Saring berdasarkan program studi">
+          <option value="semua">Semua Program Studi</option>
+          <option value="Teknik Informatika">Teknik Informatika</option>
+          <option value="Sistem Informasi">Sistem Informasi</option>
+          <option value="Teknik Industri">Teknik Industri</option>
+          <option value="Teknik Lingkungan">Teknik Lingkungan</option>
+          <option value="Manajemen">Manajemen</option>
+        </select>
+
+        <select id="filterGrade" aria-label="Saring berdasarkan grade nilai">
+          <option value="semua">Semua Grade</option>
+          <option value="A">Grade A (&ge; 85)</option>
+          <option value="B">Grade B (75 - 84)</option>
+          <option value="C">Grade C (60 - 74)</option>
+          <option value="D">Grade D (45 - 59)</option>
+          <option value="E">Grade E (&lt; 45)</option>
+        </select>
+
+        <button type="button" id="btnResetFilter" class="btn-outline" title="Reset seluruh filter">
+          ↺ Reset
+        </button>
+      </div>
+
+      <div class="toolbar-tombol-ekspor">
+        <div class="grup-kiri-ekspor">
+          <button type="button" id="btnEksporCSV" class="btn-outline">
+            📥 Ekspor ke CSV / Excel
+          </button>
+          <button type="button" id="btnCetakLaporan" class="btn-outline">
+            🖨️ Cetak Rekap / Simpan PDF
+          </button>
+        </div>
+
+        <div class="grup-kanan-ekspor">
+          <label for="urutkanData" style="font-size: 0.85rem; font-weight: 700; color: #475569;">Urutkan:</label>
+          <select id="urutkanData" style="width: auto;">
+            <option value="nama-asc" selected>Nama Mahasiswa (A - Z)</option>
+            <option value="nama-desc">Nama Mahasiswa (Z - A)</option>
+            <option value="nilai-desc">Nilai Tertinggi ke Terendah</option>
+            <option value="nilai-asc">Nilai Terendah ke Tertinggi</option>
+            <option value="nim-asc">NIM Urut Naik</option>
+            <option value="nim-desc">NIM Urut Turun</option>
+          </select>
+          <button type="button" id="btnMuatContoh" class="btn-outline" title="Muat 6 data contoh demo">
+            🔄 Data Demo
+          </button>
+          <button type="button" id="btnHapusSemua" class="btn-danger-outline" title="Kosongkan seluruh data">
+            🗑️ Kosongkan
+          </button>
+        </div>
+      </div>
+
+      <div class="info-tampil" id="infoJumlahTampil">Menampilkan 0 mahasiswa</div>
+    </section>
+
+    <!-- ===================================================================
+         TABEL REKAPITULASI DATA MAHASISWA
+         =================================================================== -->
+    <div class="table-wrap">
+      <table aria-label="Tabel Rekapitulasi Data Nilai Mahasiswa">
+        <thead>
+          <tr>
+            <th class="kolom-no">No</th>
+            <th>NIM</th>
+            <th>Nama Mahasiswa &amp; Mata Kuliah</th>
+            <th>Program Studi</th>
+            <th>Nilai</th>
+            <th>Grade</th>
+            <th>Status</th>
+            <th class="kolom-aksi">Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="daftarMahasiswa">
+          <!-- Diisi secara otomatis oleh JavaScript -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ===================================================================
+         LEMBAR TANDA TANGAN CETAK (@media print)
+         =================================================================== -->
+    <div class="print-signature print-only">
+      <div class="ttd-box">
+        <p>Mengetahui,<br>Ketua Program Studi Teknik Informatika</p>
+        <div class="ttd-space"></div>
+        <p class="ttd-nama">( Prof. Dr. Ir. Mulyono, M.Sc )</p>
+        <p class="ttd-nip">NIP. 19780512 200501 1 002</p>
+      </div>
+      <div class="ttd-box">
+        <p>Bekasi, <span id="cetakTanggalTtd">..........................</span><br>Dosen Pengampu / Penilai</p>
+        <div class="ttd-space"></div>
+        <p class="ttd-nama">( Dosen Pengampu )</p>
+        <p class="ttd-nip">NIP. .....................................</p>
+      </div>
+    </div>
+
+    <!-- ===================================================================
+         FOOTER APLIKASI
+         =================================================================== -->
+    <footer class="app-footer">
+      <div>
+        <strong>SIMAS-UPB (Sistem Informasi Manajemen Akademik)</strong> &bull; Pemrograman Visual Desktop
+      </div>
+      <div>
+        Dikembangkan oleh: <strong>Puput Novela (NIM: 312410470)</strong> &bull; Teknik Informatika Universitas Pelita
+        Bangsa
+      </div>
+    </footer>
+  </main>
+
+  <!-- ===================================================================
+       SKRIP APLIKASI
+       Dijalankan langsung via script.js agar 100% berjalan lancar
+       tanpa kendala CORS baik saat dibuka langsung (file://) maupun web server.
+       Arsitektur ES6 Modules juga tersedia secara terpisah di folder "js/".
+       =================================================================== -->
+  <script src="script.js"></script>
+</body>
+
+</html>
